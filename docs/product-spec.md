@@ -1,6 +1,6 @@
-# Product Spec — The Corporate Double Materiality Matrix 2025
+# Product Spec — The Corporate Double Materiality Matrix 2026
 
-**Version:** 1.0
+**Version:** 1.1
 **Date:** 12 October 2026
 **Author:** Ajay
 **Status:** Confirmed
@@ -10,13 +10,13 @@
 
 ## Section 1 — Tool Summary
 
-**Tool name:** The Corporate Double Materiality Matrix 2025
+**Tool name:** The Corporate Double Materiality Matrix 2026
 
 **What it does:** A single-page, interactive double materiality matrix that plots The Corporate's 16 material ESG topics as numbered, colour-coded dots on a 1–5 Financial Materiality × 1–5 Impact Materiality grid, over four background zones (Highly Material, Material, Watch List, Not Material) derived from the approved materiality thresholds. The user can toggle the Environmental, Social and Governance categories on and off and download the current view as a PNG.
 
 **Who uses it:** Ajay, the sustainability professional responsible for The Corporate's 2025 Double Materiality Assessment. He opens the file locally on his own computer and presents it live in meetings to the Double Materiality Working Group and the Executive Leadership Team. Nobody else opens the tool directly; others see it on screen or as exported PNG images in slides and the report.
 
-**Why it exists:** The Corporate has completed every step of its 2025 Double Materiality Assessment — topic identification (16 topics), stakeholder engagement (1,000 employees, 50 Tier-1 suppliers, 5 investors, 15 OEM customers, each group weighted 25%), aggregation of blended scores, and approval of materiality thresholds (2 April 2026). The one missing deliverable is the matrix itself: a clear, on-brand visual that shows where each topic falls against the approved thresholds and lets the presenter isolate E, S or G topics during discussion.
+**Why it exists:** The Corporate has completed every step of its 2025 Double Materiality Assessment — topic identification (16 topics), stakeholder engagement (1,000 employees, 50 Tier-1 suppliers, 5 investors, 15 OEM customers, each group weighted 25%), aggregation of blended scores, and approval of materiality thresholds (12 October 2026). The one missing deliverable is the matrix itself: a clear, on-brand visual that shows where each topic falls against the approved thresholds and lets the presenter isolate E, S or G topics during discussion.
 
 **Build status:** First build — no prior version.
 
@@ -119,7 +119,7 @@ Arms are capabilities added to the tool. They do not change the tier. Mark each 
 | Detail | Answer |
 |--------|--------|
 | Format | PNG image (neither CSV nor PDF). Generated entirely in the browser — no server, no library, works offline. |
-| What is exported | A "Download as PNG" button exports the matrix **exactly as currently filtered**: the header (wordmark "[ C ] THE CORPORATE" and title "Double Materiality 2025"), the chart with its four background zones, axes and axis titles, all currently visible dots with their numbers, the numbered topic list (hidden categories shown greyed out exactly as on screen), the zone legend with threshold rules, the live zone counts, and the source footnote. The E/S/G toggle buttons and the Download button themselves are **not** included in the image. Export at 2× pixel density so it stays sharp in slides and print. Filename: `The-Corporate-Double-Materiality-2025.png`; when one or more categories are switched off, append the visible categories, e.g. `The-Corporate-Double-Materiality-2025_E-S.png`. |
+| What is exported | A "Download as PNG" button exports the matrix **exactly as currently filtered**: the header (wordmark "[ C ] THE CORPORATE" and title "Double Materiality 2026" with "Author: Ajay"), the chart with its four background zones, axes and axis titles, all currently visible dots with their numbers, the numbered topic list (hidden categories shown greyed out exactly as on screen), the zone legend with threshold rules, the live zone counts, and the source footnote. The E/S/G toggle buttons and the Download button themselves are **not** included in the image. Export at 2× pixel density so it stays sharp in slides and print. Filename: `The-Corporate-Double-Materiality-2026.png`; when one or more categories are switched off, append the visible categories, e.g. `The-Corporate-Double-Materiality-2026_E-S.png`. |
 | PDF design intent | N/A — no PDF export. |
 
 ---
@@ -232,7 +232,7 @@ One view only. Layout targets a laptop or meeting-room screen (landscape, minimu
 
   1. **Header bar** (black `#000000` background, off-white `#F2F2F2` text):
      - Left: the wordmark **"[ C ] THE CORPORATE"** rendered as text (no image logo exists) — Arial, bold, letter-spaced, uppercase, exactly as it appears on the source documents.
-     - Right or beneath: the title **"Double Materiality 2025"** in Georgia.
+     - Right or beneath: the title **"Double Materiality 2026"** in Georgia, with a small "Author: Ajay" line beneath it (Arial, taupe).
      - Thin taupe `#B6B09F` rule under the header.
 
   2. **Control bar** (sand `#EAE4D5` background):
@@ -269,7 +269,7 @@ One view only. Layout targets a laptop or meeting-room screen (landscape, minimu
      - **Dot legend** — three swatches: E = Environmental, S = Social, G = Governance.
 
   5. **Footnote** (beneath chart and panel, small Arial, taupe/dark grey):
-     "Blended scores from 4 stakeholder groups at 25% each; thresholds approved 2 April 2026."
+     "Blended scores from 4 stakeholder groups at 25% each; thresholds approved 12 October 2026."
 
 - **User actions:**
   - Click E, S or G to toggle that category on/off (any combination, including all off).
@@ -292,7 +292,7 @@ One view only. Layout targets a laptop or meeting-room screen (landscape, minimu
 
 **Formula or rules:**
 
-Source: "Materiality Threshold Definitions", Stakeholder Engagement Strategy, The Corporate, approved 2 April 2026. **Priority rule:** classifications are evaluated top-down; the highest matching classification always applies. A strong score on one axis cannot be overridden by a weak score on the other.
+Source: "Materiality Threshold Definitions", Stakeholder Engagement Strategy, The Corporate, approved 12 October 2026. **Priority rule:** classifications are evaluated top-down; the highest matching classification always applies. A strong score on one axis cannot be overridden by a weak score on the other.
 
 Per topic, with F = financial score and I = impact score:
 
@@ -381,7 +381,7 @@ The builder confirmed there are no features to defer for this version. Claude Co
 | # | What to verify | Expected result | Done? |
 |---|---------------|-----------------|-------|
 | 1 | Open `index.html` by double-click with Wi-Fi off | Page loads fully with no console errors and no network requests (check DevTools Network tab is empty) | [ ] |
-| 2 | Header | Shows "[ C ] THE CORPORATE" wordmark and title "Double Materiality 2025" in brand colours and fonts | [ ] |
+| 2 | Header | Shows "[ C ] THE CORPORATE" wordmark and title "Double Materiality 2026" with "Author: Ajay" in brand colours and fonts | [ ] |
 | 3 | Axes | X = "Financial Materiality" 1–5, Y = "Impact Materiality" 1–5, gridlines at 0.5 steps | [ ] |
 | 4 | Background zones | Four zones drawn with the exact geometry of Section 9: Highly Material square from 3.5/3.5, Material L from 3.0, Watch List L from 2.0, Not Material square below 2.0/2.0; colours match Section 10; zone name labels visible | [ ] |
 | 5 | Dot positions and colours | 16 dots at the exact coordinates in Section 5; 8 green (E), 6 yellow (S), 2 red (G); each numbered and outlined | [ ] |
@@ -392,7 +392,7 @@ The builder confirmed there are no features to defer for this version. Claude Co
 | 10 | Live counts | With only G on: Highly Material 1, Material 1, Watch List 0, Not Material 0, "Showing 2 of 16 topics"; all off: all 0 and "No categories selected" | [ ] |
 | 11 | Tooltip | Hover and keyboard focus on any dot show number, full name, category, both scores to two decimals, zone; list ↔ dot cross-highlight works | [ ] |
 | 12 | Side panel | Numbered list grouped E/S/G, zone legend with the exact threshold wording, dot legend, zone counts | [ ] |
-| 13 | Footnote | "Blended scores from 4 stakeholder groups at 25% each; thresholds approved 2 April 2026." is visible | [ ] |
+| 13 | Footnote | "Blended scores from 4 stakeholder groups at 25% each; thresholds approved 12 October 2026." is visible | [ ] |
 | 14 | PNG export | Button downloads a 2× PNG from `file://` in Chrome and Edge; image contains header, chart, visible dots only, list (greyed rows as on screen), legend, counts and footnote, but no buttons; filename per Section 3 | [ ] |
 | 15 | Fit | Whole view visible without scrolling at 1366 × 768 and 1920 × 1080; stacks cleanly below ~900 px | [ ] |
 | 16 | Single file | Deliverable is one `index.html` with no external references (no `src=`/`href=` to other files or URLs) | [ ] |
@@ -445,6 +445,7 @@ The builder confirmed there are no features to defer for this version. Claude Co
 | Version | Date | What changed in the tool |
 |---------|------|--------------------------|
 | v1.0 | 12 October 2026 | Initial build |
+| v1.1 | 12 October 2026 | Title changed to "Double Materiality 2026"; "Author: Ajay" added to header and PNG export; PNG filename year changed to 2026; threshold approval date changed to 12 October 2026 |
 
 ---
 
