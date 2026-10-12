@@ -14,9 +14,9 @@
 
 **What it does:** A single-page, interactive double materiality matrix that plots The Corporate's 16 material ESG topics as numbered, colour-coded dots on a 1–5 Financial Materiality × 1–5 Impact Materiality grid, over four background zones (Highly Material, Material, Watch List, Not Material) derived from the approved materiality thresholds. The user can toggle the Environmental, Social and Governance categories on and off and download the current view as a PNG.
 
-**Who uses it:** Ajay, the sustainability professional responsible for The Corporate's 2025 Double Materiality Assessment. He opens the file locally on his own computer and presents it live in meetings to the Double Materiality Working Group and the Executive Leadership Team. Nobody else opens the tool directly; others see it on screen or as exported PNG images in slides and the report.
+**Who uses it:** Ajay, the sustainability professional responsible for The Corporate's 2026 Double Materiality Assessment. He opens the file locally on his own computer and presents it live in meetings to the Double Materiality Working Group and the Executive Leadership Team. Nobody else opens the tool directly; others see it on screen or as exported PNG images in slides and the report.
 
-**Why it exists:** The Corporate has completed every step of its 2025 Double Materiality Assessment — topic identification (16 topics), stakeholder engagement (1,000 employees, 50 Tier-1 suppliers, 5 investors, 15 OEM customers, each group weighted 25%), aggregation of blended scores, and approval of materiality thresholds (12 October 2026). The one missing deliverable is the matrix itself: a clear, on-brand visual that shows where each topic falls against the approved thresholds and lets the presenter isolate E, S or G topics during discussion.
+**Why it exists:** The Corporate has completed every step of its 2026 Double Materiality Assessment — topic identification (16 topics), stakeholder engagement (1,000 employees, 50 Tier-1 suppliers, 5 investors, 15 OEM customers, each group weighted 25%), aggregation of blended scores, and approval of materiality thresholds (12 October 2026). The one missing deliverable is the matrix itself: a clear, on-brand visual that shows where each topic falls against the approved thresholds and lets the presenter isolate E, S or G topics during discussion.
 
 **Build status:** First build — no prior version.
 
@@ -175,7 +175,7 @@ N/A — standalone tool.
 
 N/A — Data Model is D1. For build reference, the hardcoded dataset is specified below.
 
-**Embedded dataset (source: `Materiality_Aggregated_Scores.xlsx`, sheet `Aggregated`; topic numbers from "ESG Material Topics of Focus", The Corporate, 2025).** Embed exactly these values — do not round, re-order or alter names.
+**Embedded dataset (source: `Materiality_Aggregated_Scores.xlsx`, sheet `Aggregated`; topic numbers from "ESG Material Topics of Focus", The Corporate, 2026).** Embed exactly these values — do not round, re-order or alter names.
 
 | # | Topic name | Category | Financial score (x) | Impact score (y) |
 |---|-----------|----------|------------------:|----------------:|
@@ -317,7 +317,7 @@ Resulting picture: a red square in the top-right corner, an orange L-band wrappi
 
 **Output:** A zone label per topic (used in tooltip and counts) and the zone background on the chart.
 
-**Expected results with the 2025 data (use as a verification check):**
+**Expected results with the 2026 data (use as a verification check):**
 - **Highly Material (8):** 01 GHG Emissions, 02 Energy Management, 04 Hazardous Materials, 06 Upstream Supply Chain Emissions, 09 Occupational Health & Safety, 10 Labor Rights, 11 Responsible Minerals, 16 Multi-Jurisdictional Regulatory Compliance.
 - **Material (8):** 03 Water Stewardship, 05 Waste Generation, 07 Air Quality, 08 Product End-of-Life, 12 Community Impact, 13 Workforce Development, 14 DEI, 15 ESG Governance.
 - **Watch List (0)** and **Not Material (0)** — zones are still drawn and their counts shown as 0.
@@ -445,7 +445,7 @@ The builder confirmed there are no features to defer for this version. Claude Co
 | Version | Date | What changed in the tool |
 |---------|------|--------------------------|
 | v1.0 | 12 October 2026 | Initial build |
-| v1.1 | 12 October 2026 | Title changed to "Double Materiality 2026"; "Author: Ajay" added to header and PNG export; PNG filename year changed to 2026; threshold approval date changed to 12 October 2026 |
+| v1.1 | 12 October 2026 | Assessment year changed to 2026 throughout; title changed to "Double Materiality 2026"; "Author: Ajay" added to header and PNG export; PNG filename year changed to 2026; threshold approval date changed to 12 October 2026 |
 
 ---
 
