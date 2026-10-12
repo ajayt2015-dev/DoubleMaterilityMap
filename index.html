@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Corporate — Double Materiality 2026</title>
+<meta name="author" content="Ajay">
+<style>
+  :root {
+    --black: #000000;
+    --offwhite: #F2F2F2;
+    --sand: #EAE4D5;
+    --taupe: #B6B09F;
+    --ink: #1A1A1A;
+    --muted: #6E6A5E;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: Arial, Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--offwhite);
+    color: var(--ink);
+    font-family: var(--sans);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .hdr {
+    flex: none;
+    background: var(--black);
+    color: var(--offwhite);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 24px;
+    border-bottom: 3px solid var(--taupe);
+  }
+  .wordmark {
+    font: 700 15px/1 var(--sans);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .hdr-right { text-align: right; }
+  .title { margin: 0; font: 400 24px/1.1 var(--serif); }
+  .author { margin-top: 3px; font: 12px var(--sans); color: var(--taupe); }
+
+  /* Control bar */
+  .controls {
+    flex: none;
+    background: var(--sand);
+    border-bottom: 1px solid var(--taupe);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px 24px;
+  }
+  .toggles { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tgl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 10px;
+    border-radius: 999px;
+    border: 2px solid var(--ink);
+    background: #FFFFFF;
+    color: var(--ink);
+    font: 700 14px var(--sans);
+    cursor: pointer;
+  }
+  .tgl .sw {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--c);
+    border: 2px solid var(--ink);
+  }
+  .tgl[aria-pressed="false"] {
+    background: transparent;
+    border: 2px dashed #9A957F;
+    color: #77725F;
+    font-weight: 400;
+  }
+  .tgl[aria-pressed="false"] .sw { background: transparent; border-color: #9A957F; }
+  .tgl:focus-visible, .dl:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--black);
+    color: var(--offwhite);
+    border: none;
+    border-radius: 4px;
+    padding: 9px 16px;
+    font: 700 14px var(--sans);
+    cursor: pointer;
+  }
+  .dl:hover { background: #2A2A2A; }
+
+  /* Main */
+  .main {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 20px;
+    padding: 12px 24px 4px;
+  }
+  .chart-wrap { position: relative; width: 560px; height: 560px; }
+  #chart { display: block; width: 100%; height: 100%; overflow: visible; }
+  #chart .dot { cursor: default; outline: none; }
+  #chart .dot .ring { fill: none; stroke: var(--ink); stroke-width: 2.5; opacity: 0; }
+  #chart .dot.hl .ring { opacity: 1; }
+  #chart .dot:focus-visible .ring { opacity: 1; stroke-dasharray: 4 3; }
+
+  .tip {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    width: 270px;
+    background: var(--offwhite);
+    color: var(--ink);
+    border: 1.5px solid var(--taupe);
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    padding: 10px 12px;
+    font: 13px/1.35 var(--sans);
+  }
+  .tip[hidden] { display: none; }
+  .tip-h { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; font-size: 14px; }
+  .tip-cat { color: var(--muted); margin: 4px 0 6px; }
+  .tip-scores { display: flex; gap: 16px; }
+  .tip-zone { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-weight: 700; }
+
+  /* Side panel */
+  .panel {
+    min-height: 0;
+    overflow: auto;
+    background: var(--sand);
+    border-radius: 6px;
+    padding: 12px 16px;
+    container-type: inline-size;
+  }
+  .panel-inner { display: grid; grid-template-columns: 1fr; gap: 12px 24px; }
+  @container (min-width: 560px) {
+    .panel-inner { grid-template-columns: 1.1fr 1fr; }
+  }
+  .panel h2 { margin: 0 0 6px; font: 700 17px/1.2 var(--serif); }
+  .panel section + section { margin-top: 12px; }
+  .panel ul { list-style: none; margin: 0; padding: 0; }
+
+  .grp h3 {
+    display: flex; align-items: center; gap: 6px;
+    margin: 8px 0 3px;
+    font: 700 12px var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .grp h3 .sw { width: 10px; height: 10px; border-radius: 50%; background: var(--c); border: 1px solid var(--ink); }
+  .row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 2px 4px; margin: 0 -4px;
+    border-radius: 4px;
+    font-size: 14px; line-height: 1.25;
+  }
+  .row:focus-visible { outline: 2px dashed var(--ink); }
+  .row.hl { background: #FFFFFF; box-shadow: inset 0 0 0 2px var(--ink); }
+  .badge {
+    flex: none;
+    min-width: 28px; height: 20px;
+    border-radius: 10px;
+    border: 1.5px solid var(--ink);
+    background: var(--c);
+    color: var(--ct);
+    font: 700 12px/17px var(--sans);
+    text-align: center;
+  }
+  .grp.off h3, .grp.off .row { color: #8F8B80; }
+  .grp.off h3 .sw, .grp.off .badge { background: #D4D4D4; border-color: #A6A6A6; color: #666666; }
+
+  .zsw { flex: none; width: 16px; height: 16px; border: 1px solid #8F8B80; border-radius: 2px; background: var(--z); }
+  .counts li, .dotleg li { display: flex; align-items: center; gap: 8px; font-size: 14px; margin: 3px 0; }
+  .counts b { min-width: 1.2em; }
+  .showing { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+  .zleg li { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.3; margin: 4px 0; }
+  .zleg .zsw { margin-top: 1px; }
+  .note { margin: 6px 0 0; font-size: 13px; font-style: italic; color: var(--muted); }
+  .dotleg .dsw { width: 16px; height: 16px; border-radius: 50%; background: var(--c); border: 1.5px solid var(--ink); }
+
+  .foot { flex: none; padding: 4px 24px 8px; font: 12px var(--sans); color: var(--muted); }
+
+  @media (max-width: 900px) {
+    body { height: auto; overflow: auto; }
+    .hdr { flex-wrap: wrap; }
+    .main { grid-template-columns: 1fr; grid-template-rows: auto; padding: 12px 16px 4px; }
+    .chart-wrap { width: 100% !important; height: auto !important; aspect-ratio: 1 / 1; }
+    .panel { overflow: visible; }
+    .controls, .foot { padding-left: 16px; padding-right: 16px; }
+  }
+</style>
+</head>
+<body>
+  <header class="hdr">
+    <div class="wordmark">[ C ] THE CORPORATE</div>
+    <div class="hdr-right">
+      <h1 class="title">Double Materiality 2026</h1>
+      <div class="author">Author: Ajay</div>
+    </div>
+  </header>
+
+  <div class="controls" role="toolbar" aria-label="Chart controls">
+    <div class="toggles" id="toggles"></div>
+    <button type="button" class="dl" id="download">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v8.5M4.5 6.5 8 10l3.5-3.5M2 13.5h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download as PNG
+    </button>
+  </div>
+
+  <main class="main" id="main">
+    <div class="chart-wrap" id="chartWrap">
+      <svg id="chart" viewBox="0 0 640 640" role="group" aria-label="Double materiality matrix: Financial Materiality on the horizontal axis, Impact Materiality on the vertical axis"></svg>
+      <div class="tip" id="tip" hidden></div>
+    </div>
+    <aside class="panel" aria-label="Topics, counts and legend">
+      <div class="panel-inner">
+        <section>
+          <h2>Material topics</h2>
+          <div id="topicList"></div>
+        </section>
+        <div>
+          <section>
+            <h2>Zone counts</h2>
+            <ul class="counts" id="counts" aria-live="polite"></ul>
+            <p class="showing" id="showing"></p>
+          </section>
+          <section>
+            <h2>Zone legend</h2>
+            <ul class="zleg" id="zoneLegend"></ul>
+            <p class="note">Highest matching classification applies.</p>
+          </section>
+          <section>
+            <h2>Dot legend</h2>
+            <ul class="dotleg" id="dotLegend"></ul>
+          </section>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot" id="footnote">Blended scores from 4 stakeholder groups at 25% each; thresholds approved 12 October 2026.</footer>
+
+<script>
+"use strict";
+
+/* ---------- Data (Materiality_Aggregated_Scores.xlsx, sheet "Aggregated") ---------- */
+const TOPICS = [
+  { n: 1,  name: "GHG Emissions (Scopes 1, 2, 3)",                      cat: "E", f: 3.73, i: 4.30 },
+  { n: 2,  name: "Energy Management & Renewable Transition",            cat: "E", f: 3.58, i: 3.80 },
+  { n: 3,  name: "Water Stewardship",                                   cat: "E", f: 3.28, i: 3.78 },
+  { n: 4,  name: "Hazardous Materials & Chemical Management",           cat: "E", f: 4.03, i: 4.33 },
+  { n: 5,  name: "Waste Generation & Circular Economy",                 cat: "E", f: 3.43, i: 3.88 },
+  { n: 6,  name: "Upstream Supply Chain Emissions (Scope 3 Cat. 1)",    cat: "E", f: 3.70, i: 4.28 },
+  { n: 7,  name: "Air Quality & Process Emissions",                     cat: "E", f: 3.18, i: 3.55 },
+  { n: 8,  name: "Product End-of-Life & E-Waste",                       cat: "E", f: 3.48, i: 4.13 },
+  { n: 9,  name: "Occupational Health & Safety",                        cat: "S", f: 3.95, i: 4.20 },
+  { n: 10, name: "Labor Rights & Working Conditions",                   cat: "S", f: 4.43, i: 4.58 },
+  { n: 11, name: "Responsible Minerals Sourcing",                       cat: "S", f: 4.13, i: 4.55 },
+  { n: 12, name: "Community Impact & Local Employment",                 cat: "S", f: 3.13, i: 3.70 },
+  { n: 13, name: "Workforce Development & Skills",                      cat: "S", f: 3.63, i: 3.35 },
+  { n: 14, name: "Diversity, Equity & Inclusion",                       cat: "S", f: 3.20, i: 3.43 },
+  { n: 15, name: "ESG Governance & Board Accountability",               cat: "G", f: 3.70, i: 3.48 },
+  { n: 16, name: "Multi-Jurisdictional Regulatory Compliance & Ethics", cat: "G", f: 4.33, i: 4.05 }
+];
+
+const CATS = {
+  E: { name: "Environmental", color: "#2E8B3E", text: "#FFFFFF" },
+  S: { name: "Social",        color: "#F2C200", text: "#000000" },
+  G: { name: "Governance",    color: "#C62828", text: "#FFFFFF" }
+};
+const CAT_KEYS = ["E", "S", "G"];
+
+const ZONES = {
+  hm: { name: "Highly Material", color: "#F4CFCB", rule: "3.5 or above on BOTH Financial and Impact axes." },
+  m:  { name: "Material",        color: "#FAD9B5", rule: "3.0 or above on EITHER axis, and not Highly Material." },
+  w:  { name: "Watch List",      color: "#ECECEC", rule: "at least one axis 2.0–2.9, and neither axis reaches 3.0." },
+  n:  { name: "Not Material",    color: "#C9C9C9", rule: "both axes below 2.0." }
+};
+const ZONE_KEYS = ["hm", "m", "w", "n"];
+
+const FOOTNOTE = "Blended scores from 4 stakeholder groups at 25% each; thresholds approved 12 October 2026.";
+const INK = "#1A1A1A";
+const SANS = "Arial, Helvetica, sans-serif";
+const SERIF = "Georgia, 'Times New Roman', serif";
+
+/* ---------- Classification (thresholds approved 12 October 2026; top-down, highest match wins) ---------- */
+function classify(f, i) {
+  if (f >= 3.5 && i >= 3.5) return "hm";
+  if (f >= 3.0 || i >= 3.0) return "m";
+  if (f >= 2.0 || i >= 2.0) return "w";
+  return "n";
+}
+
+/* ---------- State ---------- */
+const on = { E: true, S: true, G: true };
+const visibleTopics = () => TOPICS.filter(t => on[t.cat]);
+const pad2 = n => String(n).padStart(2, "0");
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/* ---------- Chart geometry (viewBox units) ---------- */
+const VB = 640, ML = 72, MT = 22, PS = 554, U = PS / 4, R = 14;
+const clamp = v => Math.min(5, Math.max(1, v));
+const sx = v => ML + (clamp(v) - 1) * U;
+const sy = v => MT + (5 - clamp(v)) * U;
+
+/* Nudge overlapping dots apart; each keeps a link to its true position. */
+function layoutDots(topics) {
+  const minD = 2 * R + 3;
+  const lo = ML + R, hi = ML + PS - R, top = MT + R, bot = MT + PS - R;
+  const pts = topics.map(t => ({ t, ax: sx(t.f), ay: sy(t.i), x: sx(t.f), y: sy(t.i) }));
+  const separate = () => {
+    let moved = false;
+    for (let a = 0; a < pts.length; a++) {
+      for (let b = a + 1; b < pts.length; b++) {
+        const p = pts[a], q = pts[b];
+        let dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy);
+        if (d >= minD) continue;
+        if (d < 0.01) { dx = 1; dy = -1; d = Math.SQRT2; }
+        const push = (minD - d) / 2, ux = dx / d, uy = dy / d;
+        p.x -= ux * push; p.y -= uy * push;
+        q.x += ux * push; q.y += uy * push;
+        moved = true;
+      }
+    }
+    for (const p of pts) {
+      p.x = Math.min(hi, Math.max(lo, p.x));
+      p.y = Math.min(bot, Math.max(top, p.y));
+    }
+    return moved;
+  };
+  for (let it = 0; it < 300; it++) {
+    separate();
+    for (const p of pts) { p.x += (p.ax - p.x) * 0.04; p.y += (p.ay - p.y) * 0.04; }
+  }
+  for (let it = 0; it < 200 && separate(); it++);
+  return pts;
+}
+
+/* Builds the chart as drawing primitives, rendered both to SVG (screen) and canvas (PNG). */
+function buildScene() {
+  const s = [];
+  const zrect = (x1, y1, x2, y2, fill) =>
+    s.push({ t: "rect", x: sx(x1), y: sy(y2), w: sx(x2) - sx(x1), h: sy(y1) - sy(y2), fill });
+  const line = (x1, y1, x2, y2, stroke, sw) => s.push({ t: "line", x1, y1, x2, y2, stroke, sw });
+  const text = (x, y, str, o) => s.push(Object.assign({ t: "text", x, y, text: str, size: 13, weight: 400, fill: INK, anchor: "start" }, o));
+
+  // Zones, bottom layer first
+  zrect(1, 1, 5, 5, ZONES.w.color);
+  zrect(1, 1, 2, 2, ZONES.n.color);
+  zrect(3, 1, 5, 5, ZONES.m.color);
+  zrect(1, 3, 3, 5, ZONES.m.color);
+  zrect(3.5, 3.5, 5, 5, ZONES.hm.color);
+
+  // Gridlines every 0.5
+  for (let k = 1; k < 8; k++) {
+    const v = 1 + k * 0.5, c = k % 2 === 0 ? "rgba(26,26,26,0.16)" : "rgba(26,26,26,0.07)";
+    line(sx(v), MT, sx(v), MT + PS, c, 1);
+    line(ML, sy(v), ML + PS, sy(v), c, 1);
+  }
+
+  // White zone separators
+  const wl = (a, b, c, d) => line(sx(a), sy(b), sx(c), sy(d), "#FFFFFF", 2.5);
+  wl(2, 1, 2, 2); wl(1, 2, 2, 2);
+  wl(3, 1, 3, 3); wl(1, 3, 3, 3);
+  wl(3.5, 3.5, 3.5, 5); wl(3.5, 3.5, 5, 3.5);
+
+  // Zone name labels in their corners
+  const zl = { size: 10.5, weight: 700, fill: "#4A463C", ls: 1.2 };
+  text(sx(5) - 9, sy(5) + 17, "HIGHLY MATERIAL", Object.assign({ anchor: "end" }, zl));
+  text(sx(1) + 9, sy(5) + 17, "MATERIAL", zl);
+  text(sx(1) + 9, sy(3) + 17, "WATCH LIST", zl);
+  text(sx(1) + 9, sy(1) - 9, "NOT MATERIAL", zl);
+
+  // Frame, ticks, tick labels
+  s.push({ t: "rect", x: ML, y: MT, w: PS, h: PS, stroke: INK, sw: 1.2 });
+  for (let k = 0; k <= 8; k++) {
+    const v = 1 + k * 0.5, whole = k % 2 === 0, len = whole ? 6 : 3;
+    line(sx(v), MT + PS, sx(v), MT + PS + len, INK, 1);
+    line(ML - len, sy(v), ML, sy(v), INK, 1);
+    if (whole || v === 3.5) {
+      const lab = whole ? String(v) : v.toFixed(1);
+      text(sx(v), MT + PS + 22, lab, { anchor: "middle", size: 13 });
+      text(ML - 11, sy(v), lab, { anchor: "end", size: 13, mid: true });
+    }
+  }
+
+  // Axis titles
+  text(ML + PS / 2, VB - 12, "Financial Materiality", { anchor: "middle", size: 16, weight: 700 });
+  text(20, MT + PS / 2, "Impact Materiality", { anchor: "middle", size: 16, weight: 700, mid: true, rot: -90 });
+
+  // Dots
+  const vis = visibleTopics();
+  if (vis.length === 0) {
+    const cx = ML + PS / 2, cy = MT + PS / 2;
+    s.push({ t: "rect", x: cx - 130, y: cy - 24, w: 260, h: 48, fill: "rgba(242,242,242,0.92)", stroke: "#B6B09F", sw: 1, rx: 6 });
+    text(cx, cy, "No categories selected", { anchor: "middle", size: 17, fill: "#6E6A5E", mid: true });
+    return s;
+  }
+  const pts = layoutDots(vis);
+  for (const p of pts) {
+    if (Math.hypot(p.x - p.ax, p.y - p.ay) > 2) {
+      line(p.ax, p.ay, p.x, p.y, INK, 1.2);
+      s.push({ t: "circle", cx: p.ax, cy: p.ay, r: 2.6, fill: INK });
+    }
+  }
+  for (const p of pts) {
+    const c = CATS[p.t.cat];
+    s.push({ t: "dot", id: p.t.n, cx: p.x, cy: p.y, r: R, fill: c.color, textFill: c.text, label: pad2(p.t.n) });
+  }
+  return s;
+}
+
+/* ---------- SVG rendering ---------- */
+function topicSummary(t) {
+  return `${pad2(t.n)} ${t.name}. ${CATS[t.cat].name}. Financial ${t.f.toFixed(2)}, Impact ${t.i.toFixed(2)}. ${ZONES[classify(t.f, t.i)].name}.`;
+}
+
+function svgFrom(items) {
+  const n = v => Math.round(v * 100) / 100;
+  return items.map(p => {
+    switch (p.t) {
+      case "rect":
+        return `<rect x="${n(p.x)}" y="${n(p.y)}" width="${n(p.w)}" height="${n(p.h)}"${p.rx ? ` rx="${p.rx}"` : ""} fill="${p.fill || "none"}"${p.stroke ? ` stroke="${p.stroke}" stroke-width="${p.sw}"` : ""}/>`;
+      case "line":
+        return `<line x1="${n(p.x1)}" y1="${n(p.y1)}" x2="${n(p.x2)}" y2="${n(p.y2)}" stroke="${p.stroke}" stroke-width="${p.sw}"/>`;
+      case "circle":
+        return `<circle cx="${n(p.cx)}" cy="${n(p.cy)}" r="${p.r}" fill="${p.fill}"/>`;
+      case "text": {
+        const anchor = p.anchor === "start" ? "" : ` text-anchor="${p.anchor}"`;
+        const base = p.mid ? ` dominant-baseline="central"` : "";
+        const ls = p.ls ? ` letter-spacing="${p.ls}"` : "";
+        const rot = p.rot ? ` transform="rotate(${p.rot} ${n(p.x)} ${n(p.y)})"` : "";
+        return `<text x="${n(p.x)}" y="${n(p.y)}" font-family="${SANS}" font-size="${p.size}" font-weight="${p.weight}" fill="${p.fill}"${anchor}${base}${ls}${rot}>${esc(p.text)}</text>`;
+      }
+      case "dot": {
+        const t = TOPICS[p.id - 1];
+        return `<g class="dot" data-id="${p.id}" tabindex="0" role="img" aria-label="${esc(topicSummary(t))}">` +
+          `<circle class="ring" cx="${n(p.cx)}" cy="${n(p.cy)}" r="${p.r + 5}"/>` +
+          `<circle class="body" cx="${n(p.cx)}" cy="${n(p.cy)}" r="${p.r}" fill="${p.fill}" stroke="${INK}" stroke-width="1.8"/>` +
+          `<text x="${n(p.cx)}" y="${n(p.cy)}" text-anchor="middle" dominant-baseline="central" font-family="${SANS}" font-size="12.5" font-weight="700" fill="${p.textFill}" pointer-events="none">${p.label}</text></g>`;
+      }
+    }
+    return "";
+  }).join("");
+}
+
+/* ---------- Static UI (built once) ---------- */
+const $ = id => document.getElementById(id);
+const svg = $("chart"), tip = $("tip"), chartWrap = $("chartWrap");
+
+function buildStaticUI() {
+  $("toggles").innerHTML = CAT_KEYS.map(k => {
+    const count = TOPICS.filter(t => t.cat === k).length;
+    return `<button type="button" class="tgl" data-cat="${k}" aria-pressed="true" style="--c:${CATS[k].color}"><span class="sw" aria-hidden="true"></span>${k} — ${CATS[k].name} (${count})</button>`;
+  }).join("");
+
+  $("topicList").innerHTML = CAT_KEYS.map(k => {
+    const c = CATS[k];
+    const rows = TOPICS.filter(t => t.cat === k).map(t =>
+      `<li class="row" data-id="${t.n}" tabindex="0" aria-label="${esc(topicSummary(t))}"><span class="badge" style="--c:${c.color};--ct:${c.text}">${pad2(t.n)}</span><span>${esc(t.name)}</span></li>`
+    ).join("");
+    return `<div class="grp" data-cat="${k}"><h3><span class="sw" style="--c:${c.color}"></span>${c.name}</h3><ul>${rows}</ul></div>`;
+  }).join("");
+
+  $("zoneLegend").innerHTML = ZONE_KEYS.map(k =>
+    `<li><span class="zsw" style="--z:${ZONES[k].color}"></span><span><b>${ZONES[k].name}</b> — ${esc(ZONES[k].rule)}</span></li>`
+  ).join("");
+
+  $("dotLegend").innerHTML = CAT_KEYS.map(k =>
+    `<li><span class="dsw" style="--c:${CATS[k].color}"></span><span><b>${k}</b> = ${CATS[k].name}</span></li>`
+  ).join("");
+}
+
+function zoneCounts() {
+  const counts = { hm: 0, m: 0, w: 0, n: 0 };
+  for (const t of visibleTopics()) counts[classify(t.f, t.i)]++;
+  return counts;
+}
+
+function render() {
+  setActive(null);
+  svg.innerHTML = `<title>Double materiality matrix</title>` + svgFrom(buildScene());
+
+  document.querySelectorAll(".tgl").forEach(b => b.setAttribute("aria-pressed", String(on[b.dataset.cat])));
+  document.querySelectorAll(".grp").forEach(g => g.classList.toggle("off", !on[g.dataset.cat]));
+
+  const counts = zoneCounts();
+  $("counts").innerHTML = ZONE_KEYS.map(k =>
+    `<li><span class="zsw" style="--z:${ZONES[k].color}"></span><span>${ZONES[k].name}: <b>${counts[k]}</b></span></li>`
+  ).join("");
+  $("showing").textContent = `Showing ${visibleTopics().length} of ${TOPICS.length} topics`;
+}
+
+/* ---------- Hover / focus: tooltip and cross-highlight ---------- */
+function setActive(id) {
+  document.querySelectorAll(".dot.hl, .row.hl").forEach(el => el.classList.remove("hl"));
+  const t = id ? TOPICS[id - 1] : null;
+  const dot = t && on[t.cat] ? svg.querySelector(`.dot[data-id="${id}"]`) : null;
+  if (!dot) { tip.hidden = true; return; }
+  dot.classList.add("hl");
+  document.querySelector(`.row[data-id="${id}"]`).classList.add("hl");
+  showTip(t, dot);
+}
+
+function showTip(t, dot) {
+  const c = CATS[t.cat], z = ZONES[classify(t.f, t.i)];
+  tip.innerHTML =
+    `<div class="tip-h"><span class="badge" style="--c:${c.color};--ct:${c.text}">${pad2(t.n)}</span><span>${esc(t.name)}</span></div>` +
+    `<div class="tip-cat">${c.name}</div>` +
+    `<div class="tip-scores"><span>Financial: <b>${t.f.toFixed(2)}</b></span><span>Impact: <b>${t.i.toFixed(2)}</b></span></div>` +
+    `<div class="tip-zone"><span class="zsw" style="--z:${z.color}"></span>${z.name}</div>`;
+  tip.hidden = false;
+  const wr = chartWrap.getBoundingClientRect();
+  const dr = dot.querySelector(".body").getBoundingClientRect();
+  let left = dr.right - wr.left + 12;
+  if (left + tip.offsetWidth > wr.width) left = dr.left - wr.left - 12 - tip.offsetWidth;
+  let top = dr.top - wr.top + dr.height / 2 - tip.offsetHeight / 2;
+  top = Math.max(0, Math.min(wr.height - tip.offsetHeight, top));
+  tip.style.left = left + "px";
+  tip.style.top = top + "px";
+}
+
+function wireEvents() {
+  $("toggles").addEventListener("click", e => {
+    const b = e.target.closest(".tgl");
+    if (!b) return;
+    on[b.dataset.cat] = !on[b.dataset.cat];
+    render();
+  });
+
+  const bind = (container, selector) => {
+    container.addEventListener("pointerover", e => {
+      const el = e.target.closest(selector);
+      if (el) setActive(+el.dataset.id);
+    });
+    container.addEventListener("pointerout", e => {
+      const el = e.target.closest(selector);
+      if (el && !el.contains(e.relatedTarget)) setActive(null);
+    });
+    container.addEventListener("focusin", e => {
+      const el = e.target.closest(selector);
+      if (el) setActive(+el.dataset.id);
+    });
+    container.addEventListener("focusout", () => setActive(null));
+  };
+  bind(svg, ".dot");
+  bind($("topicList"), ".row");
+
+  $("download").addEventListener("click", exportPNG);
+  window.addEventListener("resize", fit);
+}
+
+/* Keep the chart square and as large as the viewport allows. */
+function fit() {
+  if (window.innerWidth <= 900) { chartWrap.style.width = chartWrap.style.height = ""; return; }
+  const main = $("main"), cs = getComputedStyle(main);
+  const h = main.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const w = main.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - parseFloat(cs.columnGap) - 400;
+  const size = Math.max(300, Math.floor(Math.min(h, w)));
+  chartWrap.style.width = chartWrap.style.height = size + "px";
+  setActive(null);
+}
+
+/* ---------- PNG export (drawn on canvas from data: no external resources, no tainting) ---------- */
+function spacedText(ctx, str, x, y, anchor, ls) {
+  if (!ls) {
+    ctx.textAlign = anchor === "middle" ? "center" : anchor === "end" ? "right" : "left";
+    ctx.fillText(str, x, y);
+    return;
+  }
+  ctx.textAlign = "left";
+  const chars = [...str], ws = chars.map(ch => ctx.measureText(ch).width);
+  const total = ws.reduce((a, b) => a + b, 0) + ls * (chars.length - 1);
+  let cx = anchor === "middle" ? x - total / 2 : anchor === "end" ? x - total : x;
+  chars.forEach((ch, k) => { ctx.fillText(ch, cx, y); cx += ws[k] + ls; });
+}
+
+function drawScene(ctx, items, ox, oy, k) {
+  ctx.save();
+  ctx.translate(ox, oy);
+  ctx.scale(k, k);
+  for (const p of items) {
+    if (p.t === "rect") {
+      ctx.beginPath();
+      if (p.rx && ctx.roundRect) ctx.roundRect(p.x, p.y, p.w, p.h, p.rx); else ctx.rect(p.x, p.y, p.w, p.h);
+      if (p.fill) { ctx.fillStyle = p.fill; ctx.fill(); }
+      if (p.stroke) { ctx.strokeStyle = p.stroke; ctx.lineWidth = p.sw; ctx.stroke(); }
+    } else if (p.t === "line") {
+      ctx.beginPath(); ctx.moveTo(p.x1, p.y1); ctx.lineTo(p.x2, p.y2);
+      ctx.strokeStyle = p.stroke; ctx.lineWidth = p.sw; ctx.stroke();
+    } else if (p.t === "circle") {
+      ctx.beginPath(); ctx.arc(p.cx, p.cy, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.fill; ctx.fill();
+    } else if (p.t === "dot") {
+      ctx.beginPath(); ctx.arc(p.cx, p.cy, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.fill; ctx.fill();
+      ctx.strokeStyle = INK; ctx.lineWidth = 1.8; ctx.stroke();
+      ctx.font = `700 12.5px ${SANS}`; ctx.fillStyle = p.textFill; ctx.textBaseline = "middle";
+      spacedText(ctx, p.label, p.cx, p.cy + 0.5, "middle", 0);
+    } else if (p.t === "text") {
+      ctx.save();
+      ctx.font = `${p.weight} ${p.size}px ${SANS}`;
+      ctx.fillStyle = p.fill;
+      ctx.textBaseline = p.mid ? "middle" : "alphabetic";
+      ctx.translate(p.x, p.y);
+      if (p.rot) ctx.rotate(p.rot * Math.PI / 180);
+      spacedText(ctx, p.text, 0, 0, p.anchor, p.ls || 0);
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
+/* Word-wraps runs of [{text, font, color}] into maxW; draws when draw=true. Returns height used. */
+function richText(ctx, runs, x, y, maxW, lh, draw) {
+  const words = [];
+  for (const r of runs) r.text.split(/(\s+)/).filter(Boolean).forEach(w => words.push({ w, font: r.font, color: r.color }));
+  let cx = x, cy = y, lineStart = true;
+  for (const wd of words) {
+    ctx.font = wd.font;
+    const space = /^\s+$/.test(wd.w);
+    if (space && lineStart) continue;
+    const ww = ctx.measureText(wd.w).width;
+    if (!space && !lineStart && cx + ww > x + maxW) { cx = x; cy += lh; lineStart = true; }
+    if (space && lineStart) continue;
+    if (draw) { ctx.fillStyle = wd.color; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic"; ctx.fillText(wd.w, cx, cy); }
+    cx += ww; lineStart = false;
+  }
+  return cy - y + lh;
+}
+
+function pill(ctx, x, y, w, h, fill, stroke) {
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, h / 2); else ctx.rect(x, y, w, h);
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke();
+}
+
+function swatch(ctx, x, y, s, fill) {
+  ctx.fillStyle = fill; ctx.fillRect(x, y, s, s);
+  ctx.strokeStyle = "#8F8B80"; ctx.lineWidth = 1; ctx.strokeRect(x + 0.5, y + 0.5, s - 1, s - 1);
+}
+
+function drawTopicsColumn(ctx, x, y, w, draw) {
+  const y0 = y;
+  ctx.font = `700 22px ${SERIF}`; ctx.fillStyle = INK; ctx.textBaseline = "alphabetic";
+  if (draw) spacedText(ctx, "Material topics", x, y + 20, "start", 0);
+  y += 34;
+  for (const k of CAT_KEYS) {
+    const c = CATS[k], off = !on[k];
+    const textCol = off ? "#8F8B80" : INK;
+    y += 8;
+    if (draw) {
+      ctx.beginPath(); ctx.arc(x + 6, y + 8, 6, 0, Math.PI * 2);
+      ctx.fillStyle = off ? "#D4D4D4" : c.color; ctx.fill();
+      ctx.strokeStyle = off ? "#A6A6A6" : INK; ctx.lineWidth = 1; ctx.stroke();
+      ctx.font = `700 14px ${SANS}`; ctx.fillStyle = textCol; ctx.textBaseline = "middle";
+      spacedText(ctx, c.name.toUpperCase(), x + 18, y + 8.5, "start", 1.1);
+    }
+    y += 24;
+    for (const t of TOPICS.filter(tp => tp.cat === k)) {
+      if (draw) {
+        pill(ctx, x, y, 34, 22, off ? "#D4D4D4" : c.color, off ? "#A6A6A6" : INK);
+        ctx.font = `700 13px ${SANS}`; ctx.fillStyle = off ? "#666666" : c.text; ctx.textBaseline = "middle";
+        spacedText(ctx, pad2(t.n), x + 17, y + 11.5, "middle", 0);
+      }
+      const h = richText(ctx, [{ text: t.name, font: `16px ${SANS}`, color: textCol }], x + 44, y + 16, w - 44, 20, draw);
+      y += Math.max(22, h) + 6;
+    }
+  }
+  return y - y0;
+}
+
+function drawInfoColumn(ctx, x, y, w, draw) {
+  const y0 = y;
+  const heading = str => {
+    ctx.font = `700 22px ${SERIF}`; ctx.fillStyle = INK; ctx.textBaseline = "alphabetic";
+    if (draw) spacedText(ctx, str, x, y + 20, "start", 0);
+    y += 34;
+  };
+  heading("Zone counts");
+  const counts = zoneCounts();
+  for (const k of ZONE_KEYS) {
+    if (draw) {
+      swatch(ctx, x, y, 18, ZONES[k].color);
+      richText(ctx, [{ text: ZONES[k].name + ": ", font: `16px ${SANS}`, color: INK }, { text: String(counts[k]), font: `700 16px ${SANS}`, color: INK }], x + 28, y + 15, w - 28, 20, true);
+    }
+    y += 27;
+  }
+  ctx.font = `15px ${SANS}`; ctx.fillStyle = "#6E6A5E"; ctx.textBaseline = "alphabetic";
+  if (draw) spacedText(ctx, `Showing ${visibleTopics().length} of ${TOPICS.length} topics`, x, y + 14, "start", 0);
+  y += 40;
+
+  heading("Zone legend");
+  for (const k of ZONE_KEYS) {
+    if (draw) swatch(ctx, x, y + 1, 18, ZONES[k].color);
+    const h = richText(ctx, [
+      { text: ZONES[k].name, font: `700 15px ${SANS}`, color: INK },
+      { text: " — " + ZONES[k].rule, font: `15px ${SANS}`, color: INK }
+    ], x + 28, y + 15, w - 28, 20, draw);
+    y += h + 8;
+  }
+  ctx.font = `italic 15px ${SANS}`; ctx.fillStyle = "#6E6A5E"; ctx.textBaseline = "alphabetic";
+  if (draw) spacedText(ctx, "Highest matching classification applies.", x, y + 14, "start", 0);
+  y += 40;
+
+  heading("Dot legend");
+  for (const k of CAT_KEYS) {
+    if (draw) {
+      ctx.beginPath(); ctx.arc(x + 9, y + 9, 9, 0, Math.PI * 2);
+      ctx.fillStyle = CATS[k].color; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.stroke();
+      richText(ctx, [{ text: k, font: `700 16px ${SANS}`, color: INK }, { text: " = " + CATS[k].name, font: `16px ${SANS}`, color: INK }], x + 28, y + 15, w - 28, 20, true);
+    }
+    y += 27;
+  }
+  return y - y0;
+}
+
+function exportFilename() {
+  const base = "The-Corporate-Double-Materiality-2026";
+  const vis = CAT_KEYS.filter(k => on[k]);
+  if (vis.length === CAT_KEYS.length) return base + ".png";
+  return base + "_" + (vis.length ? vis.join("-") : "none") + ".png";
+}
+
+function exportPNG() {
+  const SCALE = 2, W = 1600, PAD = 40, HDR = 84, RULE = 4;
+  const S = 840;                              // chart square
+  const top = HDR + RULE + 28;
+  const px = PAD + S + 36, pw = W - px - PAD; // panel box
+  const ip = 22, gap = 28;
+  const c1w = Math.round((pw - 2 * ip - gap) * 0.54), c2w = pw - 2 * ip - gap - c1w;
+  const c1x = px + ip, c2x = c1x + c1w + gap;
+
+  const canvas = document.createElement("canvas");
+  let ctx = canvas.getContext("2d");
+  const panelH = Math.max(drawTopicsColumn(ctx, c1x, 0, c1w, false), drawInfoColumn(ctx, c2x, 0, c2w, false)) + 2 * ip;
+  const bodyBottom = top + Math.max(S, panelH);
+  const H = bodyBottom + 64;
+
+  canvas.width = W * SCALE;
+  canvas.height = H * SCALE;
+  ctx = canvas.getContext("2d");
+  ctx.scale(SCALE, SCALE);
+
+  ctx.fillStyle = "#F2F2F2"; ctx.fillRect(0, 0, W, H);
+
+  // Header
+  ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, W, HDR);
+  ctx.fillStyle = "#B6B09F"; ctx.fillRect(0, HDR, W, RULE);
+  ctx.fillStyle = "#F2F2F2"; ctx.textBaseline = "middle";
+  ctx.font = `700 20px ${SANS}`;
+  spacedText(ctx, "[ C ] THE CORPORATE", PAD, HDR / 2 + 1, "start", 4.4);
+  ctx.font = `34px ${SERIF}`;
+  spacedText(ctx, "Double Materiality 2026", W - PAD, HDR / 2 - 7, "end", 0);
+  ctx.font = `15px ${SANS}`; ctx.fillStyle = "#B6B09F";
+  spacedText(ctx, "Author: Ajay", W - PAD, HDR / 2 + 24, "end", 0);
+
+  // Chart
+  drawScene(ctx, buildScene(), PAD, top, S / VB);
+
+  // Panel
+  ctx.fillStyle = "#EAE4D5";
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(px, top, pw, panelH, 8); else ctx.rect(px, top, pw, panelH);
+  ctx.fill();
+  drawTopicsColumn(ctx, c1x, top + ip, c1w, true);
+  drawInfoColumn(ctx, c2x, top + ip, c2w, true);
+
+  // Footnote
+  ctx.font = `16px ${SANS}`; ctx.fillStyle = "#6E6A5E"; ctx.textBaseline = "alphabetic";
+  spacedText(ctx, FOOTNOTE, PAD, H - 26, "start", 0);
+
+  const save = href => {
+    const a = document.createElement("a");
+    a.href = href; a.download = exportFilename();
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  if (canvas.toBlob) {
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      save(url);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }, "image/png");
+  } else {
+    save(canvas.toDataURL("image/png"));
+  }
+}
+
+/* ---------- Boot ---------- */
+buildStaticUI();
+wireEvents();
+fit();
+render();
+</script>
+</body>
+</html>
